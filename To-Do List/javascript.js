@@ -7,9 +7,7 @@ retrieveTodoList();
 // Alert user if input field is empty
 addButton.addEventListener("click", function () {
   const task = userInput.value;
-
   if (task) {
-
     addItem(task);
     userInput.value = "";
     saveTodoList();
@@ -28,7 +26,9 @@ const checkbox = document.createElement("input");
 checkbox.type = "checkbox";
 checkbox.classList.add("task-checkbox");
 checkbox.id = "checkbox";
-checkbox.setAttribute("onclick", "toggleStrikeThrough(this)");
+checkbox.addEventListener("click", function () {
+  toggleStrikeThrough(this);
+});
 
 const textNode = document.createElement("span");
 textNode.textContent = task;
@@ -36,13 +36,17 @@ textNode.textContent = task;
 const removeButton = document.createElement("button");
 removeButton.textContent = "Remove";
 removeButton.classList.add("remove");
-removeButton.setAttribute("onclick", "removeItem(this)");
+removeButton.addEventListener("click", function () {
+  removeItem(this);
+});
 
 const editButton =
 document.createElement("button");
 editButton.textContent = "Edit";
 editButton.classList.add("edit");
-editButton.setAttribute("onclick", "editItem(this)");
+editButton.addEventListener("click", function () {
+  editItem(this);
+});
 
 
 listContainer.appendChild(listItem);

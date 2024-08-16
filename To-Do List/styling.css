@@ -1,3 +1,5 @@
+
+
 body {
   background-color: cornflowerblue;
   font-family: monospace;
@@ -24,7 +26,7 @@ h1{
 
 img {
   width: 45px;
-  margin-left: px;
+  margin-left: 0;
 }
 
 ul{
@@ -118,7 +120,7 @@ h3{
 }
 
 #my_progress {
-  width: 0px;
+  width: 0;
   height: 20px;
   background-color: darkblue;
   border-radius: 20px 20px 20px 20px;
