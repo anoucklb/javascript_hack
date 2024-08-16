@@ -130,3 +130,10 @@ h3{
   align-items: center;
   justify-content: center;
 }
+
+#pet_image {
+  width: 100%;
+  position: absolute;
+  top:0;
+  cursor: pointer;
+}
