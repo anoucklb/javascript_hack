@@ -138,7 +138,6 @@ function retrieveTodoList() {
 
 function hide_cute_pets() {
   const child = document.getElementById("pet_image");
-  const parent = document.getElementById("cute_pets");
   child.parentNode.removeChild(child)
 }
 function show_cute_pets() {
