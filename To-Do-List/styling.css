@@ -138,8 +138,9 @@ h3{
 }
 
 #pet_image {
-  width: 100%;
+  width: 80%;
   position: absolute;
   top:0;
   cursor: pointer;
+  margin-left: 150px;
 }
