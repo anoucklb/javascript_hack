@@ -143,6 +143,10 @@ function updateProgressBar() {
   my_progress.style.width = `${progress_value}%`;
   // Displaying the percentage value
   my_progress.textContent = `${progress_value}%`;
+  if (progress_value === 100) {
+    console.log("Well done on completing all of your tasks, here is a little treat")
+    show_cute_pets();
+  }
 }
 
 function save(task) {
@@ -156,3 +160,18 @@ function retrieveTodoList() {
   items.forEach(addItem);
   updateProgressBar();
 }
+
+function hide_cute_pets() {
+  const child = document.getElementById("pet_image");
+  child.parentNode.removeChild(child)
+}
+function show_cute_pets() {
+  let img = document.createElement('img');
+  img.src = 'assets/cute_cats.jpg';
+  img.id = 'pet_image';
+  img.onclick = () => hide_cute_pets()
+  const div = document.getElementById("cute_pets");
+
+  div.appendChild(img);
+}
+
