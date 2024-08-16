@@ -146,7 +146,7 @@ function show_cute_pets() {
   img.id = 'pet_image';
   img.onclick = () => hide_cute_pets()
   const div = document.getElementById("cute_pets");
-
+  let mes
   div.appendChild(img);
 }
 
