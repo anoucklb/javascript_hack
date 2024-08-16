@@ -79,7 +79,20 @@ function removeItem(button) {
 // Function to edit list item
 function editItem(button) {
   const item = button.parentElement;
-  item.edit();
+  const textNode = item.querySelector ("span");
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = textNode.textContent;
+
+  item.replaceChild(input, textNode);
+
+  input.addEventListener("blur", function () {
+    textNode.textContent = input.value;
+    item.replaceChild(textNode, input);
+    saveTodoList();
+    input.focus();
+  });
 
 }
 // Function to update the progress bar width when a change is made
