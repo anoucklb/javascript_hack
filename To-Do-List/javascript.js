@@ -8,10 +8,15 @@ retrieveTodoList();
 addButton.addEventListener("click", function () {
   const task = userInput.value;
   if (task) {
-    addItem(task);
+    var  t  = {
+      name: task,
+      isChecked: false
+    }
+    addItem(t);
     userInput.value = "";
-    saveTodoList();
-
+    // saveTodoList();
+    save(t);
+    updateProgressBar();
   } else {
          alert("Please add a task 😊");
   }
@@ -21,69 +26,89 @@ addButton.addEventListener("click", function () {
 // Create and display new items
 function addItem (task){
 
-const listItem = document.createElement("li");
-const checkbox = document.createElement("input");
-checkbox.type = "checkbox";
-checkbox.classList.add("task-checkbox");
-checkbox.id = "checkbox";
-checkbox.addEventListener("click", function () {
-  toggleStrikeThrough(this);
-});
+  const listItem = document.createElement("li");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.classList.add("task-checkbox");
+  checkbox.id = task.id ?? "checkbox_" + new Date().getTime();
+  task.id = checkbox.id;
 
-const textNode = document.createElement("span");
-textNode.textContent = task;
+  checkbox.addEventListener("click", function () {
+    toggleStrikeThrough(this);
+  });
 
-const removeButton = document.createElement("button");
-removeButton.textContent = "Remove";
-removeButton.classList.add("remove");
-removeButton.addEventListener("click", function () {
-  removeItem(this);
-});
+  const textNode = document.createElement("span");
+  textNode.textContent = task.name;
 
-const editButton =
-document.createElement("button");
-editButton.textContent = "Edit";
-editButton.classList.add("edit");
-editButton.addEventListener("click", function () {
-  editItem(this);
-});
+  const removeButton = document.createElement("button");
+  removeButton.textContent = "Remove";
+  removeButton.classList.add("remove");
+  removeButton.addEventListener("click", function () {
+    removeItem(this);
+  });
+
+  const editButton =
+  document.createElement("button");
+  editButton.textContent = "Edit";
+  editButton.classList.add("edit");
+  editButton.addEventListener("click", function () {
+    editItem(this);
+  });
+
+  listContainer.appendChild(listItem);
+  listItem.appendChild(checkbox);
+  listItem.appendChild(textNode);
+  listItem.appendChild(removeButton);
+  listItem.appendChild(editButton);
 
 
-listContainer.appendChild(listItem);
-listItem.appendChild(checkbox);
-listItem.appendChild(textNode);
-listItem.appendChild(removeButton);
-listItem.appendChild(editButton);
-
-updateProgressBar();
+  const textElement = checkbox.nextElementSibling;
+  if (task.isChecked) {
+    textElement.style.textDecoration = "line-through";
+    checkbox.checked= true;
+  }
 }
 
 
 // Function to toggle strike-through style on checkbox check/uncheck and to trigger an update to the progress bar
 function toggleStrikeThrough(checkbox) {
   const textElement = checkbox.nextElementSibling;
+
+  const items = JSON.parse(localStorage.getItem("items")) || [];
+  let t = items.filter((item) => item.id === checkbox.id)[0];
+  let index  = items.findIndex((item) => item.id === checkbox.id);
+
   if (checkbox.checked) {
     textElement.style.textDecoration = "line-through";
-    updateProgressBar();
+    t.isChecked = true;
   } else {
     textElement.style.textDecoration = "none";
-    updateProgressBar();
+    t.isChecked = false;
   }
+  items[index] = t;
+  localStorage.setItem("items", JSON.stringify(items));
+  updateProgressBar();
 }
 
 
 // Function to remove an item from the list
 function removeItem(button) {
   const item = button.parentElement;
+  const  checkbox  = item.querySelector("input");
+
+  let savedItems = JSON.parse(localStorage.getItem("items")) || [];
+  savedItems = savedItems.filter((item) => item.id !== checkbox.id);
+  localStorage.setItem("items", JSON.stringify(savedItems));
+
   item.remove();
   updateProgressBar();
-  saveTodoList();
 }
 
 // Function to edit list item
 function editItem(button) {
   const item = button.parentElement;
   const textNode = item.querySelector ("span");
+  const checkbox  = item.querySelector("input");
 
   const input = document.createElement("input");
   input.type = "text";
@@ -94,21 +119,26 @@ function editItem(button) {
   input.addEventListener("blur", function () {
     textNode.textContent = input.value;
     item.replaceChild(textNode, input);
-    saveTodoList();
+
+    const items = JSON.parse(localStorage.getItem("items")) || [];
+    let t = items.filter((item) => item.id === checkbox.id)[0];
+    let index  = items.findIndex((item) => item.id === checkbox.id);
+    t.name = textNode.textContent;
+    items[index] = t;
+    localStorage.setItem("items", JSON.stringify(items));
+
     input.focus();
   });
 
 }
 // Function to update the progress bar width when a change is made
 function updateProgressBar() {
-  //getting the length of all the items added in the list
-  var list_length = document.querySelectorAll("li").length;
-  //getting the length of all the checked items in the list
-  var checked_length = document.querySelectorAll(
-    "#list_container .task-checkbox:checked"
-  ).length;
+
+  const items = JSON.parse(localStorage.getItem("items")) || [];
+  const checkedItems = items.filter((item) => item.isChecked);
+
   //calculating the % of checked items in the list to assign a correspondant width value to the progress bar
-  var progress_value = Math.round((checked_length / list_length) * 100);
+  var progress_value = Math.round((checkedItems.length / items.length) * 100);
   const my_progress = document.getElementById("my_progress");
   my_progress.style.width = `${progress_value}%`;
   // Displaying the percentage value
@@ -119,21 +149,16 @@ function updateProgressBar() {
   }
 }
 
-
-// Save todo list so it doesnt disappear when you refresh the webpage
-function saveTodoList() {
-
-  let items = [];
-  listContainer.querySelectorAll("li").forEach(function (listItem) {
-    items.push(listItem.textContent.replace("Remove", ""));
-  });
-
+function save(task) {
+  let items = JSON.parse(localStorage.getItem("items")) || [];
+  items.push(task);
   localStorage.setItem("items", JSON.stringify(items));
 }
 
 function retrieveTodoList() {
   const items = JSON.parse(localStorage.getItem("items")) || [];
   items.forEach(addItem);
+  updateProgressBar();
 }
 
 function hide_cute_pets() {
