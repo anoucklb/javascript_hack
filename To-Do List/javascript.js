@@ -108,6 +108,7 @@ function removeItem(button) {
 function editItem(button) {
   const item = button.parentElement;
   const textNode = item.querySelector ("span");
+  const checkbox  = item.querySelector("input");
 
   const input = document.createElement("input");
   input.type = "text";
@@ -118,7 +119,14 @@ function editItem(button) {
   input.addEventListener("blur", function () {
     textNode.textContent = input.value;
     item.replaceChild(textNode, input);
-    saveTodoList();
+
+    const items = JSON.parse(localStorage.getItem("items")) || [];
+    let t = items.filter((item) => item.id === checkbox.id)[0];
+    let index  = items.findIndex((item) => item.id === checkbox.id);
+    t.name = textNode.textContent;
+    items[index] = t;
+    localStorage.setItem("items", JSON.stringify(items));
+
     input.focus();
   });
 
